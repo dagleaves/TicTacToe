@@ -64,8 +64,8 @@ class computer(object):
         return retBoard
 
     def minimax(self, board, depth, isMaximizer):
-        scores = {0: -1,
-                  1: 1,
+        scores = {user.id: -1,
+                  self.id: 1,
                   'draw': 0}
         result = check_win(board)
         if result is not None:
@@ -83,13 +83,11 @@ class computer(object):
                         bestScore = max(score, bestScore)
             return bestScore
         else:
-            switch_turn = {0: 1,
-                           1: 0}
             bestScore = 100
             for i, row in enumerate(board):
                 for j, column in enumerate(row):
                     if column is None:
-                        board[i][j] = switch_turn[self.id]
+                        board[i][j] = next_turn[self.id]
                         score = self.minimax(board, depth + 1, True)
                         board[i][j] = None
                         bestScore = min(score, bestScore)
@@ -193,6 +191,36 @@ def check_win(board):
         return None
 
 
+def user_turn(board, pos):
+    game_board, displayed = user.move(board, pos)
+    if not displayed:
+        print("Not a valid move")
+    else:
+        print(f"Player moved. Game board:\n{game_board}")
+        if check_win(game_board) == "draw":
+            print("Draw! Nobody wins!")
+            pygame.quit()
+            quit()
+        elif check_win(game_board) is not None:
+            print("Player wins!")
+            pygame.quit()
+            quit()
+    return game_board, displayed
+
+
+def com_turn(board):
+    game_board = com.move(board)
+    print(f"Computer moved. Game board:\n{game_board}")
+    if check_win(game_board) == "draw":
+        print("Draw! Nobody wins!")
+        pygame.quit()
+        quit()
+    elif check_win(game_board) is not None:
+        print("Computer wins!")
+        pygame.quit()
+        quit()
+
+
 pygame.init()
 screen = pygame.display.set_mode((450, 450))
 pygame.display.set_caption('Tic Tac Toe')
@@ -207,45 +235,27 @@ pygame.draw.line(screen, white, (0, 150), (450, 150), 3)
 pygame.draw.line(screen, white, (0, 300), (450, 300), 3)
 pygame.display.update()
 
+next_turn = {0: 1,
+             1: 0}
 
 user = player(screen, game_board, 0)
 com = computer(screen, 1)
 turn = user.id
 crashed = False
+if com.id == 0:
+    com_turn(game_board)
 while not crashed:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             crashed = True
-        elif event.type == pygame.MOUSEBUTTONUP and turn == 0:
-            game_board, displayed = user.move(
+        elif event.type == pygame.MOUSEBUTTONUP and turn == user.id:
+            game_board, displayed = user_turn(
                 game_board, pygame.mouse.get_pos())
-            if not displayed:
-                print("Not a valid move")
-                turn = 0
-            else:
-                turn = 1
-                print(f"Player moved. Game board:\n{game_board}")
-                if check_win(game_board) == "draw":
-                    print("Draw! Nobody wins!")
-                    crashed = True
-                    break
-                elif check_win(game_board) is not None:
-                    print("Player wins!")
-                    crashed = True
-                    break
-            if turn == 1:
-                game_board = com.move(game_board)
-                print(f"Computer moved. Game board:\n{game_board}")
-                # print(game_board)
-                if check_win(game_board) == "draw":
-                    print("Draw! Nobody wins!")
-                    crashed = True
-                    break
-                elif check_win(game_board) is not None:
-                    print("Computer wins!")
-                    crashed = True
-                    break
-                turn = 0
+            if displayed:
+                turn = next_turn[user.id]
+            if turn == com.id:
+                com_turn(game_board)
+                turn = next_turn[com.id]
 
 pygame.quit()
 quit()
