@@ -10,33 +10,33 @@ class player(object):
     def move(self, board, pos):
         self.board = board
         tile_pos = self.find_tile(pos)
-        print(tile_pos)
+        # print(tile_pos)
         self.board, status = tile(self.window, self.board, self.id,
                                   tile_pos[0], tile_pos[1]).display()
         return self.board, status
 
     # Find tile from mouse position
     def find_tile(self, pos):
-        if pos[0] < 150:
-            if pos[1] < 150:
+        if pos[0] <= 150:
+            if pos[1] <= 150:
                 return (0, 0)
-            elif pos[1] > 150 and pos[1] < 300:
+            elif pos[1] > 150 and pos[1] <= 300:
                 return (1, 0)
-            elif pos[1] > 300 and pos[1] < 450:
+            elif pos[1] > 300 and pos[1] <= 450:
                 return (2, 0)
-        elif pos[0] > 150 and pos[0] < 300:
-            if pos[1] < 150:
+        elif pos[0] > 150 and pos[0] <= 300:
+            if pos[1] <= 150:
                 return (0, 1)
-            elif pos[1] > 150 and pos[1] < 300:
+            elif pos[1] > 150 and pos[1] <= 300:
                 return (1, 1)
-            elif pos[1] > 300 and pos[1] < 450:
+            elif pos[1] > 300 and pos[1] <= 450:
                 return (2, 1)
-        elif pos[0] > 300 and pos[0] < 450:
-            if pos[1] < 150:
+        elif pos[0] > 300 and pos[0] <= 450:
+            if pos[1] <= 150:
                 return (0, 2)
-            elif pos[1] > 150 and pos[1] < 300:
+            elif pos[1] > 150 and pos[1] <= 300:
                 return (1, 2)
-            elif pos[1] > 300 and pos[1] < 450:
+            elif pos[1] > 300 and pos[1] <= 450:
                 return (2, 2)
 
 
@@ -58,7 +58,7 @@ class computer(object):
                         bestScore = score
                         bestMove = [i, j]
 
-        print(f"Best Move: {bestMove}")
+        # print(f"Best Move: {bestMove}")
         retBoard, status = tile(self.window, board, self.id,
                                 bestMove[0], bestMove[1]).display()
         return retBoard
@@ -196,7 +196,7 @@ def user_turn(board, pos):
     if not displayed:
         print("Not a valid move")
     else:
-        print(f"Player moved. Game board:\n{game_board}")
+        # print(f"Player moved. Game board:\n{game_board}")
         if check_win(game_board) == "draw":
             print("Draw! Nobody wins!")
             pygame.quit()
@@ -210,7 +210,7 @@ def user_turn(board, pos):
 
 def com_turn(board):
     game_board = com.move(board)
-    print(f"Computer moved. Game board:\n{game_board}")
+    # print(f"Computer moved. Game board:\n{game_board}")
     if check_win(game_board) == "draw":
         print("Draw! Nobody wins!")
         pygame.quit()
